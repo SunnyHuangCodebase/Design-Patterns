@@ -13,7 +13,6 @@ class HTMLGenerator:
 
   def add_element(self,
                   element: HTMLElement,
-                  /,
                   *,
                   priority: int = 0,
                   **attributes: str):

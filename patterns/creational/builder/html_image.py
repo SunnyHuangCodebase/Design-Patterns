@@ -9,6 +9,9 @@ class HTMLElement(ABC):
   html_attributes: dict[str, str]
   content: str
 
+  def __repr__(self):
+    return self.html
+
   @property
   def attributes(self) -> str:
     return "".join([
@@ -38,6 +41,9 @@ class Image(HTMLElement):
 class HTMLBuilder(ABC):
   """Abstract builder to create HTML objects."""
   element: HTMLElement
+
+  def __repr__(self) -> str:
+    return self.element.html
 
   def set_id(self, id: str):
     """Sets unique id selector."""
@@ -110,4 +116,4 @@ if __name__ == "__main__":
   lazyload_thumbnail = ImageBuilder()
   lazyload_thumbnail.set_source(url).set_classes(
       "thumbnail").set_lazyload().build()
-  print(lazyload_thumbnail)
+  print(lazyload_thumbnail.element)

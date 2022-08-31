@@ -1,4 +1,4 @@
-from html_elements import Element, HTMLElement
+from html_element import Element, HTMLElement
 
 
 class HTMLGenerator:

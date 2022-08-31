@@ -1,5 +1,5 @@
-from Factory.html_elements import HTMLElement
-from Factory.html_factory import HTMLGenerator
+from patterns.creational.factory.html_element import HTMLElement
+from patterns.creational.factory.html_tag import HTMLGenerator
 
 
 class DarkModeHTML(HTMLGenerator):

@@ -86,8 +86,8 @@ if __name__ == "__main__":
   main()
   app = StateManager()
 
-  # Without thread locked undo method, this returns ["State 1, State 2"]
-  print(app.history)    # Returns ["State 1", "State 3"]
+  # Without thread lock on the Thread target, this returns ["Action 1, Action 2"]
+  print(app.history)    # Returns ["Action 1", "Action 3"]
 
   # Reset app history
   app.clear()
@@ -124,5 +124,7 @@ if __name__ == "__main__":
 
   main2()
 
-  # Without thread lock on the Thread target, this returns ["Action 1, Action 2"]
-  print(app.history)    # Returns ["Action 1", "Action 3"]
+  app = StateManager()
+
+  # Without thread locked undo method, this returns ["State 1, State 2"]
+  print(app.history)    # Returns ["State 1", "State 3"]

@@ -77,7 +77,15 @@ class Heading(Element):
   _attributes: dict[str, str]
 
   def __init__(self, **attributes: Any):
-    self.tag += attributes.pop('priority', "1")
+    priority = f"{attributes.pop('priority', '1')}"[0]
+    try:
+      priority = int(priority)
+    except ValueError:
+      print("ValueError: Heading elements have a priority value between 1-6.")
+      raise
+    priority = max(priority, 1)
+    priority = min(priority, 6)
+    self.tag += str(priority)
     super().__init__(**attributes)
 
 

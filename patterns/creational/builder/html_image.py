@@ -1,6 +1,6 @@
 from __future__ import annotations
 from abc import ABC
-from typing import Callable
+from typing import Any, Callable
 
 
 class HTMLElement(ABC):
@@ -73,18 +73,19 @@ def always_valid(url: str):
 class URL(str):
   """A URL string."""
 
-  def __init__(self, url: str) -> None:
+  def __new__(cls, url, validator: Callable[[str], bool] = always_valid):
+    """Validates URL and returns whether it is valid."""
+    if not validator(url):
+      raise Exception("Invalid URL")
+
+    return super().__new__(cls, url)
+
+  def __init__(self, url: str, *_):
     self.url = url
     super().__init__()
 
   def __str__(self):
-    if self.is_valid():
-      return self.url
-    raise Exception("Invalid URL")
-
-  def is_valid(self, validator: Callable[[str], bool] = always_valid):
-    """Validates URL and returns whether it is valid."""
-    return validator(self.url)
+    return self.url
 
 
 class ImageBuilder(HTMLBuilder):
@@ -100,20 +101,3 @@ class ImageBuilder(HTMLBuilder):
   def set_lazyload(self):
     self.element.html_attributes["load"] = "lazy"
     return self
-
-
-if __name__ == "__main__":
-
-  url = URL("https://www.python_design_patterns.com/images/builder.png")
-  regular_image = ImageBuilder()
-  regular_image.set_source(url).build()
-  print(regular_image)
-
-  lazyload_image = ImageBuilder()
-  lazyload_image.set_source(url).set_lazyload().build()
-  print(lazyload_image)
-
-  lazyload_thumbnail = ImageBuilder()
-  lazyload_thumbnail.set_source(url).set_classes(
-      "thumbnail").set_lazyload().build()
-  print(lazyload_thumbnail.element)

@@ -1,5 +1,33 @@
-from patterns.creational.factory.html_element import HTMLElement
-from patterns.creational.factory.html_tag import HTMLGenerator
+from patterns.creational.abstract_factory.html_element import HTMLElement, Element
+
+
+class HTMLGenerator:
+  """HTML Factory"""
+  html_elements: list[str]
+
+  def __init__(self):
+    self.html_elements = ["<html>"]
+
+  def __str__(self):
+    return self.output
+
+  def add_element(self,
+                  element: HTMLElement,
+                  *,
+                  priority: int = 0,
+                  **attributes: str):
+    """Create HTML element based on the enumerated HTMLElement member passed."""
+    # Priority is only required for heading elements (h1-h6).
+    if element is HTMLElement.HEADING:
+      attributes["priority"] = str(priority or 1)
+
+    html_element: Element = element(**attributes)
+    self.html_elements.append(html_element.html)
+    return html_element
+
+  @property
+  def output(self):
+    return "\n".join([*self.html_elements, "</html>"])
 
 
 class DarkModeHTML(HTMLGenerator):
@@ -40,29 +68,3 @@ class ColorblindHTML(HTMLGenerator):
     attributes[
         "html_class"] = classes + " colorblind" if classes else "colorblind"
     return super().add_element(element, priority=priority, **attributes)
-
-
-if __name__ == "__main__":
-
-  dark_mode_html = DarkModeHTML()
-  light_mode_html = LightModeHTML()
-  colorblind_mode_html = ColorblindHTML()
-
-  dark_mode_html.add_element(
-      HTMLElement.TITLE,
-      html_content="Dark Mode HTML",
-  )
-
-  light_mode_html.add_element(
-      HTMLElement.TITLE,
-      html_content="Light Mode HTML",
-  )
-
-  colorblind_mode_html.add_element(
-      HTMLElement.TITLE,
-      html_content="Colorblind Mode HTML",
-  )
-
-  print(dark_mode_html)
-  print(light_mode_html)
-  print(colorblind_mode_html)

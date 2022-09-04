@@ -15,11 +15,7 @@ class Prototype(Protocol):
 
   def copy(self):
     """Clone an object using Python's built-in copy library."""
-    try:
-      return copy.deepcopy(self)
-
-    except copy.Error:
-      raise copy.Error(f'Not able to copy {self}') from None
+    return copy.deepcopy(self)
 
 
 class Image(Prototype):
@@ -86,47 +82,26 @@ class ImageRegistry:
     return self.registry[image_quality].clone()
 
 
-if __name__ == "__main__":
+image = Image()
+registry = ImageRegistry()
+image.aspect_ratio = 16, 9
+image.resolution = 720, 576
 
-  # Create Image Registry and Image Prototype
-  registry = ImageRegistry()
-  image = Image()
+registry.add_image_prototype(ImagePrototype.SD, image)
 
-  # Create image formats for various resolutions
-  image.resolution = 720, 576
-  image.aspect_ratio = 16, 9
-  registry.add_image_prototype(ImagePrototype.SD, image)
+image.resolution = 1280, 720
+registry.add_image_prototype(ImagePrototype.HD, image)
 
-  hd_image = image.clone()
-  hd_image.resolution = 1280, 720
-  registry.add_image_prototype(ImagePrototype.HD, hd_image)
+image.resolution = 1920, 1080
+registry.add_image_prototype(ImagePrototype.FHD, image)
 
-  fhd_image = image.clone()
-  fhd_image.resolution = 1920, 1080
-  registry.add_image_prototype(ImagePrototype.FHD, fhd_image)
+image.resolution = 3840, 2160
+registry.add_image_prototype(ImagePrototype.UHD, image)
 
-  uhd_image = image.clone()
-  uhd_image.resolution = 3840, 2160
-  registry.add_image_prototype(ImagePrototype.UHD, uhd_image)
+image.resolution = 7680, 4320
+registry.add_image_prototype(ImagePrototype.SHV, image)
 
-  hv_image = image.clone()
-  hv_image.resolution = 4096, 2160
-  hv_image.aspect_ratio = 256, 135
-  registry.add_image_prototype(ImagePrototype.HV, hv_image)
-
-  shv_image = image.clone()
-  shv_image.resolution = 7680, 4320
-  registry.add_image_prototype(ImagePrototype.SHV, shv_image)
-
-  # Clone an image format for use with a new image
-  new_shv_image = registry.new_image(ImagePrototype.SHV)
-  new_shv_image.url = "https://www.python-design-patterns.com/images/builder.png"
-
-  print("Image prototypes from the registry:")
-  print(registry)
-
-  print("Cloned image based on SHV Prototype from the registry:")
-  print(new_shv_image)
-
-  print("Unmodified SHV Prototype in the registry")
-  print(registry.get_image_prototype(ImagePrototype.SHV))
+image.resolution = 4096, 2160
+image.aspect_ratio = 256, 135
+registry.add_image_prototype(ImagePrototype.HV, image)
+print(registry)

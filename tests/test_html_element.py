@@ -58,3 +58,7 @@ class TestHTMLElement:
     assert heading.open == "<h1 class='heading'>"
     assert heading.close == "</h1>"
     assert heading.attributes == " class='heading'"
+
+
+if __name__ == "__main__":
+  pytest.main([__file__])

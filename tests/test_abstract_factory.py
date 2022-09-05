@@ -46,3 +46,6 @@ class TestAbstractFactory:
         "<html>", "<h1 class='colorblind'>Colorblind Mode HTML</h1>"
     ]
 
+
+if __name__ == "__main__":
+  pytest.main([__file__])

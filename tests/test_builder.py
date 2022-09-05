@@ -8,13 +8,13 @@ class TestBuilder:
   def url(self):
     return URL("https://www.python_design_patterns.com/images/builder.png")
 
-  def invalid_url(self, url):
+  def invalid_url(self, url: str):
     return False
 
-  def test_url(self, url):
+  def test_url(self, url: URL):
     assert f"{url}" == "https://www.python_design_patterns.com/images/builder.png"
 
-  def test_image(self, url):
+  def test_image(self, url: URL):
     regular_image = ImageBuilder()
     regular_image.set_source(url)
     assert f"{regular_image}" == "<img src='https://www.python_design_patterns.com/images/builder.png'></img>"
@@ -22,18 +22,18 @@ class TestBuilder:
         regular_image.element
     ) == "<img src='https://www.python_design_patterns.com/images/builder.png'></img>"
 
-  def test_lazy_load_image(self, url):
+  def test_lazy_load_image(self, url: URL):
     lazyload_image = ImageBuilder()
     lazyload_image.set_source(url).set_lazyload().build()
     assert f"{lazyload_image}" == "<img src='https://www.python_design_patterns.com/images/builder.png' load='lazy'></img>"
 
-  def test_lazy_load_image_thumbnail(self, url):
+  def test_lazy_load_image_thumbnail(self, url: URL):
     lazyload_thumbnail = ImageBuilder()
     lazyload_thumbnail.set_source(url).set_classes(
         "thumbnail").set_lazyload().build()
     assert f"{lazyload_thumbnail}" == "<img class='thumbnail' src='https://www.python_design_patterns.com/images/builder.png' load='lazy'></img>"
 
-  def test_attributes(self, url):
+  def test_attributes(self, url: URL):
     image_with_attributes = ImageBuilder()
     image_with_attributes.set_source(url).set_id("hero").set_html_content(
         "Hero Image").build()

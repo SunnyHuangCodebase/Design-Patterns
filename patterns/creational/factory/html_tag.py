@@ -1,4 +1,4 @@
-from html_element import Element, HTMLElement
+from patterns.creational.factory.html_element import Element, HTMLElement
 
 
 class HTMLGenerator:

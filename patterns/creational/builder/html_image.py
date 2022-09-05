@@ -1,6 +1,6 @@
 from __future__ import annotations
 from abc import ABC
-from typing import Any, Callable
+from typing import Callable
 
 
 class HTMLElement(ABC):
@@ -73,14 +73,14 @@ def always_valid(url: str):
 class URL(str):
   """A URL string."""
 
-  def __new__(cls, url, validator: Callable[[str], bool] = always_valid):
+  def __new__(cls, url: str, validator: Callable[[str], bool] = always_valid):
     """Validates URL and returns whether it is valid."""
     if not validator(url):
       raise Exception("Invalid URL")
 
     return super().__new__(cls, url)
 
-  def __init__(self, url: str, *_):
+  def __init__(self, url: str, validator: Callable[[str], bool] = always_valid):
     self.url = url
     super().__init__()
 

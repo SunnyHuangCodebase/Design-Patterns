@@ -8,4 +8,4 @@ if __name__ == "__main__":
   pytest.main()
   cov.stop()
   cov.save()
-  cov.html_report(directory='.htmlcov')    # type: ignore
+  cov.html_report(directory='.htmlcov', omit=["*/tests*"])    # type: ignore

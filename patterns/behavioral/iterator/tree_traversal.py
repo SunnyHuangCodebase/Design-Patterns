@@ -1,3 +1,17 @@
+"""The Iterator design pattern allows for multiple ways to traverse a collection.
+
+In this case, the Tree is responsible for managing a collection of TreeNodes.
+The Iterator is separate from the Tree to uphold the Single Responsibility Principle.
+
+Each Iterator has a different method of accessing the Tree's values.
+A new Iterator might be needed if the collection changes its structure
+or if an alternate way to iterate over a collection is desired.
+
+For example, it is possible to traverse a Tree with Depth or Breadth First Search.
+Alternatively, the Tree can be subclassed into a Binary Search Tree or Trie.
+Each case could require a new iteration algorithm to produce the desired order.
+"""
+
 from __future__ import annotations
 from abc import ABC
 from collections.abc import Iterator

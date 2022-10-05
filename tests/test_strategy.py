@@ -5,7 +5,7 @@ from typing import Callable
 import pytest
 from pytest import CaptureFixture, MonkeyPatch, TempPathFactory
 
-from patterns.behavioral.strategy.text_reader import AutoRead, ReadAll, ReadParagraph, ReadSingleLine, Reader, TextFile
+from patterns.behavioral.strategy.text_reader import AutoRead, ReadAll, ReadParagraph, ReadSingleLine, TextReader, TextFile
 
 
 class TestStrategy:
@@ -51,7 +51,7 @@ class TestStrategy:
     inputs = ["1", "", "Esc"]
     next_input: Callable[..., str] = lambda: inputs.pop(0)
     monkeypatch.setattr("builtins.input", next_input)
-    reader = Reader(file)
+    reader = TextReader(file)
     reader.set_strategy("1", ReadSingleLine())
 
     reader.read()
@@ -67,7 +67,7 @@ class TestStrategy:
       monkeypatch: MonkeyPatch):
 
     monkeypatch.setattr("builtins.input", lambda: "")
-    reader = Reader(file)
+    reader = TextReader(file)
     reader.set_strategy("1", ReadSingleLine())
     reader.change_strategy("1")
     reader.read()
@@ -93,7 +93,7 @@ class TestStrategy:
                                                     capsys: CaptureFixture[str],
                                                     monkeypatch: MonkeyPatch):
     monkeypatch.setattr("builtins.input", lambda: "")
-    reader = Reader(file)
+    reader = TextReader(file)
     reader.set_strategy("1", ReadParagraph())
     reader.change_strategy("1")
     reader.read()
@@ -120,7 +120,7 @@ class TestStrategy:
     inputs = ["", "", "Esc"]
     next_input: Callable[..., str] = lambda: inputs.pop(0)
     monkeypatch.setattr("builtins.input", next_input)
-    reader = Reader(file)
+    reader = TextReader(file)
     reader.set_strategy("1", ReadParagraph())
     reader.change_strategy("1")
     reader.read()
@@ -142,7 +142,7 @@ class TestStrategy:
                     monkeypatch: MonkeyPatch):
 
     monkeypatch.setattr("builtins.input", lambda: "")
-    reader = Reader(file)
+    reader = TextReader(file)
     reader.set_strategy("1", ReadAll())
     reader.change_strategy("1")
     reader.read()
@@ -169,7 +169,7 @@ class TestStrategy:
     inputs = ["", "", "Esc"]
     next_input: Callable[..., str] = lambda: inputs.pop(0)
     monkeypatch.setattr("builtins.input", next_input)
-    reader = Reader(file)
+    reader = TextReader(file)
     interval = 0.2
     reader.set_strategy("1", AutoRead(interval))
     reader.change_strategy("1")

@@ -1,13 +1,13 @@
 import pytest
 
-from patterns.behavioral.state.smart_bathtub import BathTubMode, ColdBath, CoolPostExerciseRinse, CoolingMist, HotBath, MassageTherapy, Sauna, SmartBathtub, Toggle, UnusedBath, WarmPostExerciseRinse, WaterPressure, WaterTemperature
+from patterns.behavioral.state.smart_bathtub import BathTubMode, ColdBath, CoolPostExerciseRinse, CoolingMist, HotBath, MassageTherapy, Sauna, SmartBathtub, Toggle, Off, WarmPostExerciseRinse, WaterPressure, WaterTemperature
 
 
 class TestState:
 
   @pytest.fixture
   def smart_tub(self):
-    default = UnusedBath()
+    default = Off()
     return SmartBathtub(default)
 
   def test_default_tub(self, smart_tub: SmartBathtub):

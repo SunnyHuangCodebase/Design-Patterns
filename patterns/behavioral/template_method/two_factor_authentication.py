@@ -1,3 +1,18 @@
+"""The Authenticator implements the Template Method design pattern.
+
+The Authenticator class is an abstract base class containing a "template" for subclasses.
+The template may include a combination of template methods, abstract methods, and hooks.
+
+Template methods: Authorization template method which all subclasses can call.
+
+Abstract methods: Obfuscate user abstract method that subclasses must implement.
+  It partially hides contact information to which the authentication code was sent.
+
+Hooks: A generate_code method with default behavior, which can be overridden in subclasses.
+  For example, generate_code may generate a QR code instead of a 6 digit code.)
+
+"""
+
 from __future__ import annotations
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
@@ -8,6 +23,7 @@ from time import time
 
 @dataclass
 class User:
+  """A user of any particular app."""
   phone: str
   email: str
   two_factor_authentication: bool
@@ -22,35 +38,36 @@ class User:
 
 
 class Authenticator(ABC):
+  """Verifies a login is valid via authentication method specified by the user."""
   code: str = field(default_factory=str)
   authorized: bool = False
 
   def authorization(self, user: User):
     """Template method to enable two-factor authentication."""
-    self.generate_code()
-    self.send_code(self.code, user)
+    self._generate_code()
+    self._send_code(self.code, user)
     start_time = time()
     attempts = 0
     while not self.authorized and time() - start_time < 300 and attempts < 3:
       code = input()
-      self.validate_code(code)
+      self._validate_code(code)
       attempts += 1
 
     return self.authorized
 
-  def generate_code(self):
-    """Generate a random six digit code."""
+  def _generate_code(self):
+    """A hook that generates a random six digit code, which can be overriden for alternate codes."""
     self.code = "".join(random.choices(string.digits, k=6))
 
   @abstractmethod
-  def send_code(self, code: str, user: User):
+  def _send_code(self, code: str, user: User):
     """Sends code via user's authentication method."""
 
   @abstractmethod
-  def obfuscate_user_info(self, user: User) -> str:
+  def _obfuscate_user_info(self, user: User) -> str:
     """Partially hides user's personal identifying information."""
 
-  def validate_code(self, code: str):
+  def _validate_code(self, code: str):
     """Checks if user entered the correct authorization code."""
     self.authorized = (code == self.code)
 
@@ -59,11 +76,11 @@ class Authenticator(ABC):
 class TextAuthenticator(Authenticator):
   """Authenticates a user by sending a code through a text message."""
 
-  def send_code(self, code: str, user: User):
+  def _send_code(self, code: str, user: User):
     """Texts the code to the user's phone."""
-    print(f"Sent a code to {self.obfuscate_user_info(user)}.")
+    print(f"Sent a code to {self._obfuscate_user_info(user)}.")
 
-  def obfuscate_user_info(self, user: User) -> str:
+  def _obfuscate_user_info(self, user: User) -> str:
     return f"* (***) *** - **{user.phone[-2:]}"
 
 
@@ -71,12 +88,12 @@ class TextAuthenticator(Authenticator):
 class CallAuthenticator(Authenticator):
   """Authenticates a user by sending a code through a phone call."""
 
-  def send_code(self, code: str, user: User):
+  def _send_code(self, code: str, user: User):
     """Calls the user's phone to communicate the code through voice."""
     print(
-        f"Calling in authentication code to {self.obfuscate_user_info(user)}.")
+        f"Calling in authentication code to {self._obfuscate_user_info(user)}.")
 
-  def obfuscate_user_info(self, user: User) -> str:
+  def _obfuscate_user_info(self, user: User) -> str:
     return f"* (***) *** - **{user.phone[-2:]}"
 
 
@@ -84,11 +101,11 @@ class CallAuthenticator(Authenticator):
 class EmailAuthenticator(Authenticator):
   """Authenticates a user by sending a code to their email address."""
 
-  def send_code(self, code: str, user: User):
+  def _send_code(self, code: str, user: User):
     """Emails the code to the user's email address."""
-    print(f"Sent a code to {self.obfuscate_user_info(user)}.")
+    print(f"Sent a code to {self._obfuscate_user_info(user)}.")
 
-  def obfuscate_user_info(self, user: User) -> str:
+  def _obfuscate_user_info(self, user: User) -> str:
     email, domain = user.email.split("@")
     first_letter = email[0]
     last_letter = email[-1]

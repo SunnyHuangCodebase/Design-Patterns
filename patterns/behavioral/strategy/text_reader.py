@@ -1,3 +1,36 @@
+"""TextReader uses the Strategy design pattern to read a text file in many ways.
+It uses composition to contain a text file and list of strategies.
+In this way, it adheres to the Single Responsibility Principle.
+
+Creating a new strategy involves subclassing ReadingStrategy (inheritance).
+However, it is also possible to convert ReadingStrategy to a Protocol.
+In this case, all variations of ReadingStrategy would follow the protocol (polymorphism) 
+Then we can use dependency injection instead of composition to read a file.
+
+Example:
+  class ReadingStrategy(typing.Protocol):
+    def read(self, file):
+      ...
+  
+  class ReadSingleLine:
+    def read(self, file):
+      '''Read one line at a time'''
+      pass
+  
+  class TextReader:
+    file: TextFile
+
+    def __init__(self, file_path: Path):
+  
+    def read(self, read_strategy: ReadingStrategy):
+      read_strategy.read(self.file)
+  file_path = Path.cwd() / "file.txt"
+  reader = TextReader(file_path)
+  reader.read(ReadSingleLine())
+
+The Strategy design pattern focuses on how an object performs a task (algorithms).
+"""
+
 from __future__ import annotations
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
@@ -6,22 +39,12 @@ from time import sleep
 from typing import Generator
 
 
-class TextFile:
-  source: Path
-  text: Generator[str, None, None]
+class TextReader:
+  """Contains a TextFile object and a list of strategies to read that text file.
 
-  def __init__(self, path: Path):
-    self.source = path
-    self.text = self.text_generator()
-
-  def text_generator(self):
-    """Generator that yields a line of text from the source."""
-    with open(self.source, "r", encoding="UTF-8") as file:
-      for line in file:
-        yield line
-
-
-class Reader:
+  Each ReadStrategy offers a different way to read text, based on preference.
+  It's also possible to change the strategy in the middle of reading the text.
+  """
   file: TextFile
   read_strategy: ReadStrategy
   strategies: dict[str, ReadStrategy]
@@ -45,6 +68,23 @@ class Reader:
   def change_strategy(self, key: str):
     """Changes the strategy to read text."""
     self.read_strategy = self.strategies[key]
+
+
+class TextFile:
+  """Contains a file source and a generator with the file's text."""
+  source: Path
+  text: Generator[str, None, None]
+
+  def __init__(self, path: Path):
+    self.source = path
+    self.text = self.text_generator()
+
+  def text_generator(self):
+    """Generator that yields a line of text from the source."""
+    # with open(self.source, "r", encoding="UTF-8") as file:
+    with self.source.open() as file:
+      for line in file:
+        yield line
 
 
 class ReadStrategy(ABC):

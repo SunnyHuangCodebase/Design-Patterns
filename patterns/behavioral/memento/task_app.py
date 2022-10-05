@@ -1,9 +1,23 @@
+"""The Task App implements the Memento  design pattern.
+
+The TaskApp may contain a history of states to enable undo/redo functionality.
+It can create TaskStates whenever it performs a new action.
+These TaskStates can then be added to a list of TaskStates in a TaskHistory.
+TaskHistory is responsible for rolling back changes or reverting undo actions.
+
+Each component of the Memento pattern has one job.
+The TaskApp keeps track of tasks and is the Originator of TaskStates.
+TaskStates serve as the Memento, which contains the internal state of the TaskApp.
+TaskHistory is the Caretaker, managing TaskApp's state via undo/redo functions.
+"""
+
 from __future__ import annotations
 from dataclasses import dataclass, field
 
 
 class TaskApp:
-  """App to manage daily tasks. Memento Design Pattern Originator"""
+  """App to manage daily tasks.
+  The 'Originator' in the Memento Design Pattern."""
   _to_do_list: dict[int, str]
   _completed_tasks: dict[int, str]
   _last_task_id: int
@@ -33,15 +47,15 @@ class TaskApp:
     del self._to_do_list[id]
     self._completed_tasks[id] = task
 
-  def current_state(self) -> TaskMemento:
+  def current_state(self) -> TaskState:
     """Saves the app state as a memento."""
-    return TaskMemento(
+    return TaskState(
         self._to_do_list.copy(),
         self._completed_tasks.copy(),
         self._last_task_id,
     )
 
-  def restore_state(self, memento: TaskMemento):
+  def restore_state(self, memento: TaskState):
     """Restores the state from memento."""
     self._to_do_list = memento.to_do_list.copy()
     self._completed_tasks = memento.completed_tasks.copy()
@@ -49,19 +63,21 @@ class TaskApp:
 
 
 @dataclass
-class TaskMemento:
-  """Stores the app state before every action. Memento Design Pattern Memento."""
+class TaskState:
+  """Stores the app state before every action.
+  The 'Memento' in the Memento Design Pattern."""
   to_do_list: dict[int, str]
   completed_tasks: dict[int, str]
   last_task_id: int
 
 
 @dataclass
-class TaskManager:
-  """Manages the state of the task app. Memento Design Pattern Caretaker."""
+class TaskHistory:
+  """Manages the state of the task app.
+  The 'Caretaker' in the Memento Design Pattern."""
   _app: TaskApp
-  _history: list[TaskMemento] = field(default_factory=list)
-  _undo_history: list[TaskMemento] = field(default_factory=list)
+  _history: list[TaskState] = field(default_factory=list)
+  _undo_history: list[TaskState] = field(default_factory=list)
 
   def backup(self):
     """Adds a memento to _history."""
@@ -90,9 +106,9 @@ class TaskManager:
     self._app.restore_state(state)
 
   @property
-  def history(self) -> list[TaskMemento]:
+  def history(self) -> list[TaskState]:
     return self._history
 
   @property
-  def undo_history(self) -> list[TaskMemento]:
+  def undo_history(self) -> list[TaskState]:
     return self._undo_history

@@ -22,7 +22,7 @@ class TestTemplateMethod:
     captured = capsys.readouterr()
     assert authenticator.authorized == True
     assert captured.out == textwrap.dedent(f"""\
-      Sent a code to {authenticator.obfuscate_user_info(user)}.
+      Sent a code to {authenticator._obfuscate_user_info(user)}.
       Successfully logged in!
     """)
 
@@ -34,7 +34,7 @@ class TestTemplateMethod:
     captured = capsys.readouterr()
     assert authenticator.authorized == True
     assert captured.out == textwrap.dedent(f"""\
-      Calling in authentication code to {authenticator.obfuscate_user_info(user)}.
+      Calling in authentication code to {authenticator._obfuscate_user_info(user)}.
       Successfully logged in!
     """)
 
@@ -46,7 +46,7 @@ class TestTemplateMethod:
     captured = capsys.readouterr()
     assert authenticator.authorized == True
     assert captured.out == textwrap.dedent(f"""\
-      Sent a code to {authenticator.obfuscate_user_info(user)}.
+      Sent a code to {authenticator._obfuscate_user_info(user)}.
       Successfully logged in!
     """)
 
@@ -58,7 +58,7 @@ class TestTemplateMethod:
     captured = capsys.readouterr()
     assert authenticator.authorized == False
     assert captured.out == textwrap.dedent(f"""\
-      Sent a code to {authenticator.obfuscate_user_info(user)}.
+      Sent a code to {authenticator._obfuscate_user_info(user)}.
       Please try logging in again!
     """)
 

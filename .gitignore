@@ -155,3 +155,4 @@ cython_debug/
 *.txt
 *.json
 *.bak
+*.bak.py

@@ -1,4 +1,23 @@
+"""The Smart Bathtub implements the State design pattern.
+
+Each bathtub mode subclasses an abstract base class called BathtubState.
+Alternatively, BathtubState can also be defined as a protocol.
+
+The tub's default state is Off and comes with several modes (states).
+
+When the tub receives updates, it may be desirable to add new modes.
+Doing so simply requires creating a new subclass of BathtubState.
+If BathtubState is a protocol, create a new class that follows the protocol.
+
+Since no modifications are made to SmartBathtub for new features,
+the State pattern abides by the Open-Closed Principle of SOLID, in that
+objects should be open to extension but closed to modification.
+
+The State design pattern focuses on how an object's state changes its behavior.
+"""
+
 from __future__ import annotations
+
 from abc import ABC, abstractmethod
 from enum import Enum, auto
 
@@ -34,6 +53,27 @@ class Toggle(Enum):
   OFF = auto()
 
 
+class BathTubState(ABC):
+  """The interface of a bathtub's state."""
+  tub: SmartBathtub
+
+  @abstractmethod
+  def adjust_bathtub(self):
+    """Controls bathtub."""
+
+
+class Off(BathTubState):
+  """Turns off all features of the tub."""
+
+  def adjust_bathtub(self):
+    self.tub.adjust_bathtub_mode(BathTubMode.OFF)
+    self.tub.adjust_water_temperature(WaterTemperature.COLD)
+    self.tub.adjust_water_pressure(WaterPressure.OFF)
+    self.tub.toggle_drain(Toggle.OFF)
+    self.tub.toggle_diverter(Toggle.OFF)
+    self.tub.toggle_overflow_pipe(Toggle.OFF)
+
+
 class SmartBathtub:
   """Smart bathtub composed of a state class which controls other attributes."""
   _state: BathTubState
@@ -46,6 +86,11 @@ class SmartBathtub:
 
   def __init__(self, state: BathTubState):
     self.change_state(state)
+
+  def change_state(self, state: BathTubState):
+    self._state = state
+    self._state.tub = self
+    self._state.adjust_bathtub()
 
   def adjust_water_temperature(self, temperature: WaterTemperature):
     self.water_temperature = temperature
@@ -64,32 +109,6 @@ class SmartBathtub:
 
   def toggle_overflow_pipe(self, toggle: Toggle):
     self.overflow_pipe = toggle
-
-  def change_state(self, state: BathTubState):
-    self._state = state
-    self._state.tub = self
-    self._state.adjust_bathtub()
-
-
-class BathTubState(ABC):
-  """The interface of a bathtub's state."""
-  tub: SmartBathtub
-
-  @abstractmethod
-  def adjust_bathtub(self):
-    """Controls bathtub."""
-
-
-class UnusedBath(BathTubState):
-  """Turns off all features of the tub."""
-
-  def adjust_bathtub(self):
-    self.tub.adjust_bathtub_mode(BathTubMode.OFF)
-    self.tub.adjust_water_temperature(WaterTemperature.COLD)
-    self.tub.adjust_water_pressure(WaterPressure.OFF)
-    self.tub.toggle_drain(Toggle.OFF)
-    self.tub.toggle_diverter(Toggle.OFF)
-    self.tub.toggle_overflow_pipe(Toggle.OFF)
 
 
 class ColdBath(BathTubState):
